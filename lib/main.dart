@@ -10,6 +10,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: ThemeData(
         primarySwatch: Colors.blue,
@@ -17,6 +18,7 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(),
     );
   }
+
 }
 
 class MyHomePage extends StatefulWidget {
@@ -24,17 +26,28 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
+  
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+
+  List<Widget> ganhouWidget = <Widget>[
+    const Text('Jogando...'),
+    const Text('Parabéns você ganhou!')
+  ];
+
   final List<String> _itens =
       List.generate(16, (index) => index == 0 ? '' : index.toString());
+      int ganhador = 0;
   _changeIndex(int i) {
     int _emptyIndex = _itens.lastIndexOf('');
     int _previousItem = i - 1;
     int _nextItem = i + 1;
     int _previousRow = i - 4;
     int _nextRow = i + 4;
+    int a = 1;
+    int j;
+    int verificar = 1;
 
     if (_emptyIndex == _previousItem) {
       _itens[_previousItem] = _itens[i];
@@ -52,8 +65,37 @@ class _MyHomePageState extends State<MyHomePage> {
       _itens[_nextRow] = _itens[i];
 
       _itens[i] = '';
+    } 
+
+    for(j=0; j<=14; j++){
+      ganhouWidget[verificar];
+      print(_itens[j]);
+      print(a);
+      
+      if(verificar==1){
+        if(_itens[j] == a.toString()){
+          a++;
+        }
+        else{
+          verificar=0;
+        }
+      }
     }
+
+    if(verificar==1){
+      ganhouWidget[verificar];
+      
+    }
+    
+    teste(verificar);
+
     setState(() {});
+  }
+
+  teste (int verificar){
+    setState(() {
+      ganhador = verificar;
+    });
   }
 
   @override
@@ -62,13 +104,26 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
   }
 
+ /*  @override
+  void _exibirDialogo() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Parabéns você ganhou!'),
+          content: Text('Deseja continuar o jogo?'),
+        );
+      },
+    );
+  } */
+
   @override
   Widget build(BuildContext context) {
-    debugShowCheckedModeBanner:
-    false;
+    
     return Scaffold(
+      
       appBar: AppBar(
-        title: const Text('Sudoku'),
+        title: Center(child: ganhouWidget[ganhador]),
       ),
       body: Center(
         child: AspectRatio(
