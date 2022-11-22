@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 
 void main() {
   runApp(const MyApp());
@@ -18,7 +19,6 @@ class MyApp extends StatelessWidget {
       home: const MyHomePage(),
     );
   }
-
 }
 
 class MyHomePage extends StatefulWidget {
@@ -26,20 +26,22 @@ class MyHomePage extends StatefulWidget {
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
-  
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-
   List<Widget> ganhouWidget = <Widget>[
     const Text('Jogando...'),
     const Text('Parabéns você ganhou!')
   ];
 
-  final List<String> _itens =
-      List.generate(16, (index) => index == 0 ? '' : index.toString());
-      int ganhador = 0;
+  final List<String> _itens = List.generate(16, (index) => index == 0 ? '' : index.toString());
+  int ganhador = 0;
+  int cont = 0;
   _changeIndex(int i) {
+    if (cont == 0) {
+      startTimer();
+    }
+
     int _emptyIndex = _itens.lastIndexOf('');
     int _previousItem = i - 1;
     int _nextItem = i + 1;
@@ -53,77 +55,102 @@ class _MyHomePageState extends State<MyHomePage> {
       _itens[_previousItem] = _itens[i];
 
       _itens[i] = '';
+      cont++;
     } else if (_emptyIndex == _nextItem) {
       _itens[_nextItem] = _itens[i];
 
       _itens[i] = '';
+      cont++;
     } else if (_emptyIndex == _previousRow) {
       _itens[_previousRow] = _itens[i];
 
       _itens[i] = '';
+      cont++;
     } else if (_emptyIndex == _nextRow) {
       _itens[_nextRow] = _itens[i];
 
       _itens[i] = '';
-    } 
+      cont++;
+    }
 
-    for(j=0; j<=14; j++){
+    for (j = 1; j <= 15; j++) {
       ganhouWidget[verificar];
       print(_itens[j]);
       print(a);
-      
-      if(verificar==1){
-        if(_itens[j] == a.toString()){
+
+      if (verificar == 1) {
+        if (_itens[j] == a.toString()) {
           a++;
-        }
-        else{
-          verificar=0;
+        } else {
+          verificar = 0;
         }
       }
     }
 
-    if(verificar==1){
+    if (verificar == 1) {
       ganhouWidget[verificar];
-      
     }
-    
+
     teste(verificar);
 
     setState(() {});
   }
 
-  teste (int verificar){
+  teste(int verificar) {
     setState(() {
       ganhador = verificar;
     });
   }
 
+  int _start = 0;
+
+  void startTimer() {
+    const secs = const Duration(seconds: 1);
+    // ignore: unnecessary_new
+    new Timer.periodic(
+      secs,
+      (Timer timer) {
+        if (_start == 50000) {
+          setState(() {
+            timer.cancel();
+          });
+        } else if (ganhador == 1) {
+            setState(() {
+            timer.cancel();
+          });
+        } else {
+          setState(() {
+            _start++;
+          });
+        }
+      },
+    );
+  }
+
   @override
   void initState() {
-    _itens.shuffle();
+    //_itens.shuffle();
     super.initState();
   }
 
- /*  @override
-  void _exibirDialogo() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Parabéns você ganhou!'),
-          content: Text('Deseja continuar o jogo?'),
-        );
-      },
-    );
-  } */
 
   @override
   Widget build(BuildContext context) {
-    
     return Scaffold(
-      
       appBar: AppBar(
         title: Center(child: ganhouWidget[ganhador]),
+        actions: [
+          Text(cont.toString() + " Jogadas  ",
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
+          Text(_start.toString() + " Tempo  ",
+              style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white)),
+        ],
       ),
       body: Center(
         child: AspectRatio(
