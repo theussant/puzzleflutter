@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
+const IconData shuffle = IconData(0xe5a1, fontFamily: 'MaterialIcons');
+
 
 void main() {
   runApp(const MyApp());
@@ -42,32 +44,32 @@ class _MyHomePageState extends State<MyHomePage> {
       startTimer();
     }
 
-    int _emptyIndex = _itens.lastIndexOf('');
-    int _previousItem = i - 1;
-    int _nextItem = i + 1;
-    int _previousRow = i - 4;
-    int _nextRow = i + 4;
+    int emptyIndex = _itens.lastIndexOf('');
+    int previousItem = i - 1;
+    int nextItem = i + 1;
+    int previousRow = i - 4;
+    int nextRow = i + 4;
     int a = 1;
     int j;
     int verificar = 1;
 
-    if (_emptyIndex == _previousItem) {
-      _itens[_previousItem] = _itens[i];
+    if (emptyIndex == previousItem) {
+      _itens[previousItem] = _itens[i];
 
       _itens[i] = '';
       cont++;
-    } else if (_emptyIndex == _nextItem) {
-      _itens[_nextItem] = _itens[i];
+    } else if (emptyIndex == nextItem) {
+      _itens[nextItem] = _itens[i];
 
       _itens[i] = '';
       cont++;
-    } else if (_emptyIndex == _previousRow) {
-      _itens[_previousRow] = _itens[i];
+    } else if (emptyIndex == previousRow) {
+      _itens[previousRow] = _itens[i];
 
       _itens[i] = '';
       cont++;
-    } else if (_emptyIndex == _nextRow) {
-      _itens[_nextRow] = _itens[i];
+    } else if (emptyIndex == nextRow) {
+      _itens[nextRow] = _itens[i];
 
       _itens[i] = '';
       cont++;
@@ -102,30 +104,48 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+
   int _start = 0;
 
+  String minutes = "00";
+  String seconds = "00";
+  int m = 0;
+
   void startTimer() {
-    const secs = const Duration(seconds: 1);
+    const secs = Duration(seconds: 1);
     // ignore: unnecessary_new
     new Timer.periodic(
       secs,
       (Timer timer) {
-        if (_start == 50000) {
-          setState(() {
-            timer.cancel();
-          });
-        } else if (ganhador == 1) {
+        if (ganhador == 1) {
             setState(() {
             timer.cancel();
           });
         } else {
           setState(() {
             _start++;
+            if (_start == 60){
+              m++;
+              _start = 0;
+            }
+            if (_start >= 10 ){
+              seconds = _start.toString();
+            }
+            else {
+              seconds = "0$_start";
+            }
+            if (m >= 10){
+              minutes = m.toString();
+            }
+            else {
+              minutes = "0$m";
+            }
           });
         }
       },
     );
   }
+
 
   @override
   void initState() {
@@ -134,24 +154,35 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
 
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Center(child: ganhouWidget[ganhador]),
         actions: [
-          Text(cont.toString() + " Jogadas  ",
+          IconButton(
+            icon: const Icon(Icons.shuffle),
+            tooltip: 'Randomizar',
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text('Randomizando')));
+                  _itens.shuffle();
+            },
+          ),
+          Text("$cont Jogadas  ",
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
-          Text(_start.toString() + " Tempo  ",
+          Text("$minutes:$seconds",
               style: const TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
                   color: Colors.white)),
         ],
       ),
+      
       body: Center(
         child: AspectRatio(
             aspectRatio: 1,
@@ -170,7 +201,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           borderRadius: BorderRadius.circular(10)),
                       child: Center(
                         child: Text(
-                          '${_itens[i]}',
+                          _itens[i],
                           style: const TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
