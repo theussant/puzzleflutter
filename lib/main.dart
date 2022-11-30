@@ -149,7 +149,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    //_itens.shuffle();
     super.initState();
   }
 
@@ -168,6 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text('Randomizando')));
                   _itens.shuffle();
+                  startTimer();
             },
           ),
           Text("$cont Jogadas  ",
