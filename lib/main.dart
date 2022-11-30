@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
-const IconData shuffle = IconData(0xe5a1, fontFamily: 'MaterialIcons');
 
+const IconData shuffle = IconData(0xe5a1, fontFamily: 'MaterialIcons');
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
     const Text('Parabéns você ganhou!')
   ];
 
-  final List<String> _itens = List.generate(16, (index) => index == 0 ? '' : index.toString());
+  final List<String> _itens =
+      List.generate(16, (index) => index == 0 ? '' : index.toString());
   int ganhador = 0;
   int cont = 0;
   _changeIndex(int i) {
@@ -104,12 +105,17 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
-
   int _start = 0;
 
   String minutes = "00";
   String seconds = "00";
   int m = 0;
+
+  void stop() {
+    cont = 0;
+    _start = 0;
+    //startTimer();
+  }
 
   void startTimer() {
     const secs = Duration(seconds: 1);
@@ -118,26 +124,24 @@ class _MyHomePageState extends State<MyHomePage> {
       secs,
       (Timer timer) {
         if (ganhador == 1) {
-            setState(() {
+          setState(() {
             timer.cancel();
           });
         } else {
           setState(() {
             _start++;
-            if (_start == 60){
+            if (_start == 60) {
               m++;
               _start = 0;
             }
-            if (_start >= 10 ){
+            if (_start >= 10) {
               seconds = _start.toString();
-            }
-            else {
+            } else {
               seconds = "0$_start";
             }
-            if (m >= 10){
+            if (m >= 10) {
               minutes = m.toString();
-            }
-            else {
+            } else {
               minutes = "0$m";
             }
           });
@@ -146,13 +150,10 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
-
   @override
   void initState() {
     super.initState();
   }
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +165,11 @@ class _MyHomePageState extends State<MyHomePage> {
             icon: const Icon(Icons.shuffle),
             tooltip: 'Randomizar',
             onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Randomizando')));
-                  _itens.shuffle();
-                  startTimer();
+              ScaffoldMessenger.of(context)
+                  .showSnackBar(const SnackBar(content: Text('Randomizando')));
+              _itens.shuffle();
+              startTimer();
+              stop();
             },
           ),
           Text("$cont Jogadas  ",
@@ -182,7 +184,6 @@ class _MyHomePageState extends State<MyHomePage> {
                   color: Colors.white)),
         ],
       ),
-      
       body: Center(
         child: AspectRatio(
             aspectRatio: 1,
